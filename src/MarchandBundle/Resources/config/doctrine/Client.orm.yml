@@ -1,0 +1,26 @@
+MarchandBundle\Entity\Client:
+    type: entity
+    table: null
+    repositoryClass: MarchandBundle\Repository\ClientRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        nom:
+            type: string
+            length: 255
+            column: nom
+
+
+    oneToMany:
+        commande:
+            targetEntity: MarchandBundle\Entity\Commande
+            mappedBy: id
+
+
+
+
+    lifecycleCallbacks: {  }

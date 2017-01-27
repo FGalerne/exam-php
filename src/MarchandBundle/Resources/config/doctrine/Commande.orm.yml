@@ -1,0 +1,30 @@
+MarchandBundle\Entity\Commande:
+    type: entity
+    table: null
+    repositoryClass: MarchandBundle\Repository\CommandeRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        totalPrice:
+            type: integer
+            nullable: true
+        quantity:
+            type: integer
+
+    manyToOne:
+        client:
+            targetEntity: MarchandBundle\Entity\Client
+            inversedBy : id
+        produit:
+            targetEntity: MarchandBundle\Entity\Produit
+            inversedBy: id
+
+
+
+
+
+    lifecycleCallbacks: {  }

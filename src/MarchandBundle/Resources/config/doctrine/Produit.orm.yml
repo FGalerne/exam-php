@@ -1,0 +1,28 @@
+MarchandBundle\Entity\Produit:
+    type: entity
+    table: null
+    repositoryClass: MarchandBundle\Repository\ProduitRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        fruit:
+            type: string
+            length: 255
+        price:
+            type: integer
+
+
+    oneToMany:
+        commande:
+            targetEntity: MarchandBundle\Entity\Commande
+            mappedBy: id
+
+
+
+
+
+    lifecycleCallbacks: {  }

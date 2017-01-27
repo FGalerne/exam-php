@@ -1,0 +1,140 @@
+<?php
+
+namespace MarchandBundle\Controller;
+
+use MarchandBundle\Entity\Commande;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use MarchandBundle\Entity\Client;
+
+/**
+ * Commande controller.
+ *
+ */
+class CommandeController extends Controller
+{
+    /**
+     * Lists all commande entities.
+     *
+     */
+    public function indexAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $commandes = $em->getRepository('MarchandBundle:Commande')->findAll();
+        $clients = $em->getRepository('MarchandBundle:Commande')->findAll();
+
+        return $this->render('MarchandBundle:commande:index.html.twig', array(
+            'commandes' => $commandes,
+
+
+        ));
+    }
+
+    /**
+     * Creates a new commande entity.
+     *
+     */
+    public function newAction(Request $request)
+    {
+        $commande = new Commande();
+        $form = $this->createForm('MarchandBundle\Form\CommandeType', $commande);
+        $form->handleRequest($request);
+
+        $produitId = $form->get('produit')->getData();
+        $quantity= $form->get('quantity')->getData();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+            $produits = $em->getRepository('MarchandBundle:Produit')->findOneBy(array('id' => $produitId));
+            $prix = $produits->getPrice();
+
+            $Totalprix = $prix * $quantity;
+            $commande->setTotalPrice($Totalprix);
+
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($commande);
+            $em->flush($commande);
+
+            return $this->redirectToRoute('commande_show', array('id' => $commande->getId()));
+        }
+
+        return $this->render('MarchandBundle:commande:new.html.twig', array(
+            'commande' => $commande,
+            'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     * Finds and displays a commande entity.
+     *
+     */
+    public function showAction(Commande $commande)
+    {
+        $deleteForm = $this->createDeleteForm($commande);
+
+        return $this->render('MarchandBundle:commande:show.html.twig', array(
+            'commande' => $commande,
+            'delete_form' => $deleteForm->createView(),
+        ));
+    }
+
+    /**
+     * Displays a form to edit an existing commande entity.
+     *
+     */
+    public function editAction(Request $request, Commande $commande)
+    {
+        $deleteForm = $this->createDeleteForm($commande);
+        $editForm = $this->createForm('MarchandBundle\Form\CommandeType', $commande);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('commande_edit', array('id' => $commande->getId()));
+        }
+
+        return $this->render('MarchandBundle:commande:edit.html.twig', array(
+            'commande' => $commande,
+            'edit_form' => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
+        ));
+    }
+
+    /**
+     * Deletes a commande entity.
+     *
+     */
+    public function deleteAction(Request $request, Commande $commande)
+    {
+        $form = $this->createDeleteForm($commande);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($commande);
+            $em->flush($commande);
+        }
+
+        return $this->redirectToRoute('commande_index');
+    }
+
+    /**
+     * Creates a form to delete a commande entity.
+     *
+     * @param Commande $commande The commande entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createDeleteForm(Commande $commande)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('commande_delete', array('id' => $commande->getId())))
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
+    }
+}

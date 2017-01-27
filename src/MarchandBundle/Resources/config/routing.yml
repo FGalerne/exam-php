@@ -1,0 +1,15 @@
+marchand_produit:
+    resource: "@MarchandBundle/Resources/config/routing/produit.yml"
+    prefix:   /produit
+
+marchand_client:
+    resource: "@MarchandBundle/Resources/config/routing/client.yml"
+    prefix:   /client
+
+marchand_commande:
+    resource: "@MarchandBundle/Resources/config/routing/commande.yml"
+    prefix:   /commande
+
+marchand_homepage:
+    path:     /
+    defaults: { _controller: MarchandBundle:Default:index }
